@@ -1,10 +1,22 @@
-// Models
+/*
+ * Model
+ *
+ * Instead of [Bindable], we create properties as Knockout Observables
+ * Note that we've isolated all knowledge of Knockout within our domain and
+ * presentation models:  it's basically acting as a 'bindable model' framework,
+ * replacing Flex's [Bindable].
+ */
 var Todo = function (content, done) {
     this.content = ko.observable(content);
     this.done = ko.observable(done);
 };
 
-// Service delegate: Amplify (local storage) implementation
+/*
+ * Service Delegate
+ *
+ * Abstracts out-of-browser dependencies.  In this case,
+ * we're hiding the fact that we use the Amplify framework for easy local storage.
+ */
 var AmplifyTodoService = function () {
     this.load = function(  ) {
         var data = amplify.store( "todos-fury" );
@@ -16,12 +28,30 @@ var AmplifyTodoService = function () {
     }
 }
 
-// Controller
+/*
+ * Controller
+ *
+ * An event-driven, MVC-style Controller.  Responds to events dispatched
+ * by the UI, coordinates use of services, and updates both domain and
+ * presentation ("view") models.
+ *
+ * In this example, I'm using the Controller as the sole point of event
+ * subscription, but you're free to do whatever you want.  This is a
+ * good place to introduce two of the three fury.js functions you
+ * should care about:
+ *
+ * fury.inject( target, bean name, target's property name, callback ) is like [Inject] in Swiz
+ * fury.subscribe( some event name, target, target method ) is like [EventHandler] in Swiz
+ */
 var TodoController = function () {
 
     // DEPENDENCIES
 
-    // Inject our presentation model and set up any delegated event handler on resolution
+    /* Presentation model injection: note that it adds event subscriptions on injection
+     * (via a callback), but that the event handlers themselves are members of the presentation
+     * model.  The PM could handle this subscription directly, but I like having the Controller
+     * contain my subscription definitions.
+     */
     fury.inject( this, "todoPresentationModel", "pm", function() {
         fury.subscribe( "todo.delete", this.pm.todos, this.pm.todos.remove );
         fury.subscribe( "todo.edit", this.pm, this.pm.editedTodo );
@@ -30,7 +60,7 @@ var TodoController = function () {
         fury.subscribe( "todos.completeAll", this.pm, this.pm.completeAll );
     } );
 
-    // Inject our service and set up any delegated event handler on resolution
+    /* Service injection */
     fury.inject( this, "todoService", "service", function() {
         // When the state of the model changes, save it.
         fury.subscribe( "todos.changed", this.service, this.service.save );
@@ -38,12 +68,20 @@ var TodoController = function () {
 
     // EVENT HANDLERS
 
-    // Set up any event listeners in this controller
+    /* Set up any subscriptions within this controller */
+
+    /*
+     * When the application starts, run this function.  Think [EventHandler] with an
+     * anonymous method.
+     */
     fury.subscribe( "application.start", this, function() {
         this.pm.initialize( this.service.load() );
     });
 
-    // Validate and then save a new todo
+    /*
+     * When someone submits a Todo, validate and then save via the injected
+     * service.
+     */
     fury.subscribe( "todo.submitted", this, function( content ) {
         if ( content.length ) {
             this.pm.todos.push( new Todo( content, false ) );
@@ -52,13 +90,22 @@ var TodoController = function () {
         }
     });
 
-    // When a todo is updated, null out the currently edited todo
+    /*
+     * When someone finishes editing a todo, change the PM to have
+     * no selected todo.
+     */
     fury.subscribe( "todo.update", this, function ( todo ) {
         this.pm.editedTodo( null );
     });
 }
 
-// Presentation Model
+/*
+ * Presentation model
+ *
+ * It's made "bindable" via Knockout.  Note that we've isolated
+ * all knowledge of Knockout within our domain and presentation models:  it's basically
+ * acting as a 'bindable model' framework, replacing Flex's [Bindable].
+ */
 var TodoPresentationModel = function() {
     var self = this;
 
@@ -68,7 +115,10 @@ var TodoPresentationModel = function() {
 
     // PROPERTIES
 
-    // "Bindable" properties
+    /*
+     * "Bindable" properties representing the state of our view.  Their
+     * names should be descriptive enough to say what they do.
+     */
     self.todos = ko.observableArray([]);
     self.completedLabel = ko.observable( "" );
     self.remainingLabel = ko.observable( "" );
@@ -81,16 +131,18 @@ var TodoPresentationModel = function() {
 
     // METHODS
 
-    // Set up initial state
+    // Set up initial state from a list of raw objects
     self.initialize = function ( todos ) {
+        // Use knockout to transform the raw objects into Todo instances
         ko.utils.arrayForEach( todos, function( rawTodo ) {
             self.todos.push( new Todo( rawTodo.content, rawTodo.done ));
         });
 
+        // Whenever Knockout sees a change to this model, call update()
         ko.computed( self.update );
     }
 
-    // Maintains state of bindable properties whenever a change is detected
+    // Refresh the state of our presentation model
     self.update = function () {
         var completedTodos = ko.utils.arrayFilter(self.todos(), function(todo) {
             return todo.done();
@@ -102,6 +154,7 @@ var TodoPresentationModel = function() {
         self.completedLabel( self.formatter.pluralizeCompletedItems( completedTodos.length ) );
         self.remainingLabel( self.formatter.pluralizeRemainingItems( self.todos().length - completedTodos.length ) );
 
+        // Use Fury to tell the world the model has changed
         fury.publish( "todos.changed", ko.toJS( self.todos ) );
     }
 
@@ -127,7 +180,11 @@ var TodoPresentationModel = function() {
     }
 }
 
-// Utilities
+/*
+ * Utilities
+ *
+ * Standalone helpers and such intended to be injected as dependencies.
+ */
 
 var TodoFormatter = function() {
     this.pluralizeRemainingItems = function (count) {
@@ -138,8 +195,12 @@ var TodoFormatter = function() {
     }
 }
 
-// Register dependencies
 
+/**
+ * fury.js DI configuration
+ *
+ * This registers beans with Fury's DI engine (think Swiz BeanProvider)
+ */
 fury.register({
     todoFormatter : new TodoFormatter(),
     todoPresentationModel : new TodoPresentationModel(),
@@ -147,8 +208,14 @@ fury.register({
     todoService : new AmplifyTodoService()
 })
 
-// Let's go.
+
+/**
+ * Hell yes it plays with jQuery, and you should use it in your Controller.
+ */
 $(document).ready( function() {
+    // Ask fury for the todoPresentationModel bean and tell Knockout to watch it for changes
     ko.applyBindings( fury.bean( "todoPresentationModel" ) );
+
+    // Publish the "application.start" message (think dispatchEvent( eventName, data ) )
     fury.publish( "application.start" );
 })

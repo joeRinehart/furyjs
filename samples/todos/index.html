@@ -10,14 +10,17 @@
             <h1>Todos</h1>
         </div>
         <div class="content">
+            <!-- On submission, dispatch an event containing the 'todo' content and stop submission -->
             <form onsubmit="fury.publish('todo.submitted', $('#new-todo').val() );return false;">
             <div id="create-todo">
+                <!-- When changes this input (key up), publish the event for handling -->
                 <input id="new-todo" placeholder="What needs to be done?" onkeyup="fury.publish('newtodo.content.changed')" />
                 <span class="ui-tooltip-top" data-bind="visible: showTooltip" style="display: none;">Press Enter to save this task</span>
             </div>
             </form>
             <div id="todos">
                 <div">
+                    <!-- When someone changes this checkbox, publish event for handling -->
                     <input id="check-all" class="check" type="checkbox" data-bind="checked: allTodosAreComplete" onchange="fury.publish( 'todos.completeAll', this.checked )" />
                     <label for="check-all">Mark all as complete</label>
                 </div>
@@ -26,11 +29,14 @@
                         <div class="todo">
                             <div class="display">
                                 <input class="check" type="checkbox" data-bind="checked: done" />
+                                <!-- When double clicked, publish that the Todo model associated with this <div> needs to be edited -->
                                 <div class="todo-content" style="cursor: pointer;" data-bind="text: content" ondblclick="fury.publish( 'todo.edit', ko.dataFor( this ) )">$Todo Content</div>
                                 <span class="todo-destroy" onclick="fury.publish( 'todo.delete', ko.dataFor( this ) )"></span>
                             </div>
+                            <!-- When submitted, publish that the Todo model associated with this <form> needs to be updated -->
                             <form onsubmit="fury.publish('todo.update', ko.dataFor( this ) );return false;">
                             <div class="edit">
+                                <!-- When blurred, publish that the Todo model associated with this <input> needs to be updated -->
                                 <input class="todo-input" data-bind="value: content,valueUpdate: 'afterkeydown'" onblur="fury.publish( 'todo.update', ko.dataFor( this ) )"/>
                             </div>
                             </form>
@@ -42,6 +48,7 @@
                 <span class="todo-count" data-bind="visible: remainingTodosExist">
                     <span class="number" data-bind="text: remainingLabel">$0</span> left.
                 </span>
+                <!-- When clicks, state that completed todos should be cleared -->
                 <span class="todo-clear" data-bind="visible: completedTodosExist" onclick="fury.publish( 'todos.clearCompleted' )">
                     <a href="#">
                         Clear <span class="number-done" data-bind="text: completedLabel">$0</span>
