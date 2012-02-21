@@ -57,8 +57,9 @@
       <p>The core of it all, letting you escape the tree that was the displaylist and enter the realm of good MVC. A lot of
       JavaScript I see doesn't acknowledge this yet, so fury.js provides a central event dispatcher much like really
       early Swiz (later replaced by the application itself!).  Whereas most other JavaScript "pub/sub" frameworks rely
-      on global-level event handlers, fury.js assumes your event handlers are located with a class, such as a controller.
-      If that made no sense, let me put it this way:  most JavaScript event frameworks act like you defined your handlers
+      on global-level event handlers, fury.js assumes your event handlers are located within an instance a freestanding, independent instance
+      of a class (e.g. a controller).</p>
+      <p>If that made no sense, let me put it this way:  most JavaScript event frameworks act like you defined your handlers
       within your top-level MXML application file, and then you dug into your entire view tree to take action.</p>
 
       <p>Where you would write:</p>
