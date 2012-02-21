@@ -27,7 +27,7 @@
     pre { background: #000; color: #fff; padding: 15px;}
     hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
     .footer { text-align:center; padding-top:30px; font-style: italic; }
-    .banner { width:100%;text-align:center;background-color: #980200; color:#fff; font-weight: bold; margin: 0 auto }
+    .banner { padding:2px;width:100%;text-align:center;background-color: #980200; color:#fff; font-weight: bold; margin: 0 auto }
     .banner h1 { color : #fff }
   </style>
 </head>
@@ -53,10 +53,18 @@
       fury.js is a mini-framework for JavaScript providing dead-simple, standalone:
       <ul>
           <li>Dependency Injection</li>
-          <li>Event handling and mediation (a.k.a. "pub/sub")</li>
-          <li>Collaboration with others (e.g. Knockout.js and jQuery) with dependency on none</li>
+          <li>Pub/sub-style Event handling and mediation</li>
+          <li>Collaboration with others with dependency on none: it loves to play with jQuery and Knockout</li>
       </ul>
+
+      fury.js <strong>does not</strong>:
+      <ul>
+          <li>Require you to use any pattern, but I like MVC, MVVM (Presentation Model), and DI</li>
+      </ul>
+
+      fury.js owes its actual and conceptual existence to <a href="http://swizframework.org/">the Swiz Framework for Flex</a>.
     </div>
+
 
       <h2>Sample Application</h2>
       <p>I've re-implemented TodoMVC by refactoring the Knockout.js version to use fury.js for event-driven development
@@ -77,13 +85,15 @@ fury.inject( this, "todoService", "service" );</pre>
 &lt;input type="button" onclick="fury.publish( 'button.clicked', { greeting : 'Hi!' } )" /&gt;</pre>
 
       <h3>fury.subscribe( eventName, target, functionReferenceOrName )</h3>
+      State that when a message is published, you want a certain function to be invoked within a given object.
       <pre>// When someone clicks something, alert the user
 fury.subscribe( "button.clicked", this, function( data ) {
     alert( data.greeting );
 ));;</pre>
 
-      <h3>fury.register( { depedencyName : depedencyInstance, anotherDependency: anotherInstance } )</h3>
-      Register a map of dependency instances with fury.  (And, yes, they can be late-bound:  you can register <em>after</em> you inject()!)
+      <h3>fury.register( { depedencyName : depedencyInstance } )</h3>
+      Register a map of dependency instances with fury.<br />
+      (And, yes, they can be late-bound:  you can register <em>after</em> you inject()!)
       <pre>// Set up our dependencies
 fury.register({
     todoFormatter : new TodoFormatter(),
