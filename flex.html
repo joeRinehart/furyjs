@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+
+<title>fury.js: Swiz-like MVC for JavaScript</title>
+<link type="text/css" rel="stylesheet" href="styles.css"></link>
+</head>
+
+<body>
+<!--
+  <a href="https://github.com/joeRinehart/furyjs"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+  -->
+  <div class="banner">
+      <h1>fury.js</h1>
+  </div>
+  <div class="bannerBottom">Four methods to freedom.&nbsp;&nbsp;&nbsp;&nbsp;</div>
+  <div id="container">
+    <div class="description">
+        <h1 style="text-align: center">Sigh.</h1>
+        <p>If you're anything like me, you worked in the great world of Flex. We had great frameworks, like Swiz and Robotlegs. We had an IDE
+        that was as good as its Eclipse container allowed it to be. We had an awesome community.</p>
+        <p>And then Adobe went and screwed it all up. Now you're likely looking at JavaScript, and it's not pretty.  That's why I cobbled together this little toolkit.</p>
+        <p>fury.js, combined with tools like Knockout, is how I'm writing JavaScript-based apps using the same architectures
+        that I used with Swiz:  controllers, presentation models, service delegates, injections, bindings.  There's all there
+        with just a little help from fury.js.</p>
+        <p>Here's a quick guide, just for you folks who speak MXML, aimed mostly at the Swiz dialect.</p>
+    </div>
+
+
+      <h2>[Inject]</h2>
+      
+      <p>Ahh, [Inject].  You asked, and your bean was delivered.  fury.js has an equivalent, and you don't need to worry about
+      wacky "Oops, I called inject() on instantiation, but I hadn't registered the dependency yet!" kind of stuff.  fury.js
+      handles late-binding of dependencies just fine.</p>
+      
+      <p>Where you would write:</p>
+
+      <pre>[Inject] public var service : SomeService</pre>
+
+      <p>fury.js lets you write:</p>
+
+      <pre>fury.inject( this, "someService", someService )</pre>
+
+      <p>Inside that class that is "this," you'll get a property named "someService" that is the bean registered as "someService."  This
+      should sound awfully familiar.</p>
+
+      <p>Going further, you can have something happen right after injection takes place:</p>
+
+      <pre>fury.inject( this, "someService", someService, function() {
+    console.log( "someService was injected into:" );
+    console.log( this ); // note that "this" is resolved correctly!
+}</pre>
+
+      <h2>[EventHandler]</h2>
+
+      <p>The core of it all, letting you escape the tree that was the displaylist and enter the realm of good MVC. A lot of
+      JavaScript I see doesn't acknowledge this yet, so fury.js provides a central event dispatcher much like really
+      early Swiz (later replaced by the application itself!).  Whereas most other JavaScript "pub/sub" frameworks rely
+      on global-level event handlers, fury.js assumes your event handlers are located with a class, such as a controller.
+      If that made no sense, let me put it this way:  most JavaScript event frameworks act like you defined your handlers
+      within your top-level MXML application file, and then you dug into your entire view tree to take action.</p>
+
+      <p>Where you would write:</p>
+
+      <pre>[EventHandler( event="GreetingEvent.SAY_HI", properties="message") ]
+public function sayHi( message : String ) : void
+{
+    // stuff
+}         
+</pre>
+
+      <p>fury.js lets you write:</p>
+
+      <pre>fury.subscribe( "greeting.sayHi", this, function( message ) {
+    // stuff
+});</pre>
+      
+      <h2>dispatchEvent( event )</h2>
+      
+      Back in 2000 or so, Flash's event system opened my eyes to a new world of development.  It led to me writing Model-Glue,
+      which really jumpstarted my career.  It's the core of how we build good Flex applications, so I had to have it
+      in JavaScript-land.
+      
+      <p>Where you would write:</p>
+      
+      <pre>dispatcher.dispatchEvent( new GreetingEvent( GreetingEvent.SAY_HI, "Hi mom!" ) );</pre>
+      
+      <p>fury.js lets you write:</p>
+      
+      <pre>fury.publish( "greeting.sayHi", "Hi Mom!" );</pre>
+
+      <p>That second argument can be anything, so you can do fun things like:</p>
+
+      <pre>fury.publish( "contact.save", { firstName : "Mark", lastName: "Weir"} );</pre>
+
+      <p>Or, if you choose to use the "M" part of "MVC":</p>
+
+      <pre>fury.publish( "contact.save", new Contact( 'Steve', 'Peat' );</pre>
+
+      <h2>BeanProvider.as</h2>
+
+      Yeah, it was really nice to define beans in MXML and all that good stuff.  Nothing quite that elegant exists
+      in JavaScript (yet), so fury.js provides a simple way to register a bunch of beans at once.
+
+      <p>Where you would write:</p>
+
+      <pre>&lt;service:ContactService /&gt;
+&lt;control:ContactController /&gt;
+&lt;pm:ContactEditorPresentationModel /&gt;
+</pre>
+
+      <p>fury.js lets you write:</p>
+
+      <pre>fury.register({
+    contactService : new ContactService(),
+    contactController : new ContactController(),
+    contactEditorPresentationModel : new ContactEditorPresentationModel(),
+})</pre>
+
+
+      <h2>Contact</h2>
+      <p><a href="mailto:joe.rinehart@gmail.com">joe.rinehart@gmail.com</a></p>
+    
+
+    <h2>Download</h2>
+    <p>
+      You can download this project in either
+      <a href="https://github.com/joeRinehart/furyjs/zipball/master">zip</a> or
+      <a href="https://github.com/joeRinehart/furyjs/tarball/master">tar formats.
+    </p>
+    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
+      by running:
+      <pre>$ git clone git://github.com/joeRinehart/furyjs</pre>
+    </p>
+
+    <div class="footer">
+      get the source code on GitHub : <a href="https://github.com/joeRinehart/furyjs">joeRinehart/furyjs</a>
+    </div>
+
+  </div>
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-29384818-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>"
+</body>
+</html>
