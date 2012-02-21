@@ -22,7 +22,7 @@
         that was as good as its Eclipse container allowed it to be. We had an awesome community.</p>
         <p>And then Adobe went and screwed it all up. Now you're likely looking at JavaScript, and it's not pretty.  That's why I cobbled together this little toolkit.</p>
         <p>fury.js, combined with tools like Knockout, is how I'm writing JavaScript-based apps using the same architectures
-        that I used with Swiz:  controllers, presentation models, service delegates, injections, bindings.  There's all there
+        that I used with Swiz:  controllers, presentation models, service delegates, injections, bindings.  They're all there
         with just a little help from fury.js.</p>
         <p>Here's a quick guide, just for you folks who speak MXML, aimed mostly at the Swiz dialect.</p>
     </div>
@@ -96,7 +96,7 @@ public function sayHi( message : String ) : void
 
       <p>Or, if you choose to use the "M" part of "MVC":</p>
 
-      <pre>fury.publish( "contact.save", new Contact( 'Steve', 'Peat' );</pre>
+      <pre>fury.publish( "contact.save", new Contact( 'Steve', 'Peat' ) );</pre>
 
       <h2>BeanProvider.as</h2>
 
@@ -119,6 +119,12 @@ public function sayHi( message : String ) : void
 })</pre>
 
 
+      <h2>Next Steps</h2>
+      
+      <p>I've rewritten the Knockout port of TodoMVC to use fury.js and the nearly standard "model, controller, presentation model, service"
+      setup we use in Swiz applications.  Its <a href="https://raw.github.com/joeRinehart/furyjs/master/samples/todos/js/todos_fury.js">big
+      ugly JavaScript file</a> is annotated with an eye towards Swiz developers, and the <a href="http://joerinehart.github.com/furyjs/todomvc/index.html">full application</a> is
+      available as part of fury.js' Git repository.</p>
       <h2>Contact</h2>
       <p><a href="mailto:joe.rinehart@gmail.com">joe.rinehart@gmail.com</a></p>
     
