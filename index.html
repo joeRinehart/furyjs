@@ -34,12 +34,13 @@
 </head>
 
 <body>
-
+<!--
   <a href="https://github.com/joeRinehart/furyjs"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+  -->
   <div class="banner">
       <h1>fury.js</h1>
   </div>
-  <div class="bannerBottom">Four methods to freedom.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+  <div class="bannerBottom">Four methods to freedom.&nbsp;&nbsp;&nbsp;&nbsp;</div>
   <div id="container">
     <!--
     <div class="download">
@@ -53,14 +54,17 @@
     <div class="description">
       fury.js is a mini-framework for JavaScript providing dead-simple, standalone:
       <ul>
-          <li>Dependency Injection</li>
+          <li>Building blocks for decoupled, tiered architectures like MVC or MVVM</li>
+          <li>Dependency Injection / Inversion of Control</li>
           <li>Pub/sub-style Event handling and mediation</li>
-          <li>Collaboration with others with dependency on none: it loves to play with jQuery and Knockout</li>
+          <li>Collaboration with others with dependency on none: it loves to play with <a href="http://jquery.com/">jQuery</a> and <a href="http://knockoutjs.com/">Knockout</a></li>
       </ul>
 
       fury.js <strong>does not</strong>:
       <ul>
-          <li>Require you to use any pattern, but I like MVC, MVVM (Presentation Model), and DI</li>
+          <li>Tolerate boilerplate</li>
+          <li>Require you to use any given patterns</li>
+          <li>Bind you to any specific transfer formats (REST, JSON), server, or routing methods</li>
       </ul>
 
       fury.js owes its actual and conceptual existence to <a href="http://swizframework.org/">the Swiz Framework for Flex</a>.
@@ -68,15 +72,14 @@
 
 
       <h2>Sample Application</h2>
-      <p>I've re-implemented TodoMVC by refactoring the Knockout.js version to use fury.js for event-driven development
+      <p>I've re-implemented TodoMVC by refactoring the <a href="http://knockoutjs.com/">Knockout</a> version to use fury.js for event-driven development
       with dependency injection.  Feel free to <a href="todomvc/index.html">check it out online</a> or as part of your git clone
       of fury.js's source.</p>
       
-      <h2>Use</h2>
-      <p>There's really only four methods to learn:</p>
+      <h2>Four Methods to Freedom</h2>
 
-      <h3>fury.inject( where, what, as, callback)</h3>
-      Inject a named dependency into another object as a given property name, then execute an optional callback.
+      <h3>fury.inject( where, what, as, callback )</h3>
+      Inject a named dependency into another object as a given property name, then execute an optional callback.  It's completely ok to inject() a dependency that hasn't even been defined yet: fury.js will resolve it later.
       <pre>// Inject the "todoService" into this as "service"
 fury.inject( this, "todoService", "service" );</pre>
 
