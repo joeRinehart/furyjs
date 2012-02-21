@@ -24,7 +24,7 @@
     a { color: #333333; }
     .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; }
     .download { float: right; }
-    pre { background: #000; color: #fff; padding: 15px;}
+    pre { background: #666; color: #fff; padding: 15px; border: 1px solid #000 }
     hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
     .footer { text-align:center; padding-top:30px; font-style: italic; }
     .banner { padding:2px;width:100%;text-align:center;background-color: #980200; color:#fff; font-weight: bold; margin: 0 auto }
@@ -90,7 +90,7 @@ fury.inject( this, "todoService", "service" );</pre>
       <pre>// When someone clicks something, alert the user
 fury.subscribe( "button.clicked", this, function( data ) {
     alert( data.greeting );
-));;</pre>
+));</pre>
 
       <h3>fury.register( { depedencyName : depedencyInstance } )</h3>
       Register a map of dependency instances with fury.<br />
@@ -101,7 +101,7 @@ fury.register({
     todoPresentationModel : new TodoPresentationModel(),
     todoController : new TodoController(),
     todoService : new AmplifyTodoService()
-})</pre>
+});</pre>
 
       <h2>Contact</h2>
       <p><a href="mailto:joe.rinehart@gmail.com">joe.rinehart@gmail.com</a></p>
